@@ -14,10 +14,7 @@ DISPLAYSURFACE = pygame.display.set_mode((400, 300), 0, 32)
 PURPLE = (155, 0, 255)
 FILE = 'sample.wav'
 
-FREQUENCY_A = 440
-FREQUENCY_B = 880
-FREQUENCY_C = 1320
-FREQUENCY_D = 1760
+FREQUENCY = 440
 seconds = 1
 
 N_CHANNELS = 1
@@ -40,27 +37,55 @@ noise_out.setparams((
     COMP_NAME
     ))
 
-values = []
 
-for i in range(0, N_FRAMES):
-    tone_A = math.sin(2.0 * PI * FREQUENCY_A * (i / float(FRAMERATE))) * (VOLUME * (AMPLITUDE * 0.5))
-    tone_B = math.sin(2.0 * PI * FREQUENCY_B * (i / float(FRAMERATE))) * (VOLUME * (AMPLITUDE * 0.5))
-    #tone_C = math.sin(2.0 * PI * FREQUENCY_C * (i / float(FRAMERATE))) * (VOLUME * (AMPLITUDE * 0.25))
-    #tone_D = math.sin(2.0 * PI * FREQUENCY_D * (i / float(FRAMERATE))) * (VOLUME * (AMPLITUDE * 0.25))
+def generate_tones(amount_of_tones):
+    tone = []
+    tones = []
 
-    combined_tone = (tone_A + tone_B)# + tone_C + tone_D) * 1.30  # TODO hardcoding is naughty
+    frequency_modifier = 0
+    amplitude_modifier = (1 / amount_of_tones)
 
-    if combined_tone > AMPLITUDE:
-        combined_tone = AMPLITUDE
-    elif combined_tone < -AMPLITUDE:
-        combined_tone = -AMPLITUDE
+    for i in range(0, amount_of_tones):
+        print((FREQUENCY + frequency_modifier))
+        for j in range(0, N_FRAMES):
+            part_of_a_sinewave = math.sin(2.0 * PI * (FREQUENCY + frequency_modifier) * (j / float(FRAMERATE))) * (VOLUME * (AMPLITUDE * amplitude_modifier))
+            print(part_of_a_sinewave)
+            tone.append(part_of_a_sinewave)
+        frequency_modifier = (frequency_modifier + 440)
+        tones.append(tone)
 
-    print(int(combined_tone))
+    return combine_tones(tones)
 
-    packaged_value = struct.pack("i", int(combined_tone))
 
-    for j in range(0, N_CHANNELS):
-        values.append(packaged_value)
+def create_tone():
+    amount_of_tones = int(input('How many tones to combine?: '))
+    values = []
+    combined_tone = generate_tones(amount_of_tones)
+    for i in range(0, len(combined_tone)):
+
+        packaged_value = struct.pack("i", int(combined_tone[i]))
+
+        for j in range(0, N_CHANNELS):
+            values.append(packaged_value)
+
+    value_str = b''.join(values)
+    noise_out.writeframes(value_str)
+    noise_out.close()
+
+
+def combine_tones(list_of_tones):
+
+    combined_tone = []
+
+    for i in range(0, len(list_of_tones[0])):
+        combined_tone.append(0)
+        for tone in list_of_tones:
+            combined_tone[i] = combined_tone[i] + tone[i]
+
+    print(combined_tone)
+
+    return combined_tone
+
 
 # largest = 0
 # for value in values:
@@ -72,9 +97,7 @@ for i in range(0, N_FRAMES):
     # value = bytes(louder)
     # print(int(value))
 
-value_str = b''.join(values)
-noise_out.writeframes(value_str)
-noise_out.close()
+create_tone()
 my_noise = pygame.mixer.Sound('sample.wav')
 
 while True:
