@@ -14,8 +14,8 @@ DISPLAYSURFACE = pygame.display.set_mode((400, 300), 0, 32)
 PURPLE = (155, 0, 255)
 FILE = 'sample.wav'
 
-FREQUENCY = 440
-seconds = 1
+FREQUENCY = 340
+seconds = 0.2
 
 N_CHANNELS = 1
 SAMPLE_WIDTH = 2
@@ -51,7 +51,7 @@ def generate_tones(amount_of_tones):
             part_of_a_sinewave = math.sin(2.0 * PI * (FREQUENCY + frequency_modifier) * (j / float(FRAMERATE))) * (VOLUME * (AMPLITUDE * amplitude_modifier))
             # print(part_of_a_sinewave)
             tone.append(part_of_a_sinewave)
-        frequency_modifier = (frequency_modifier + 440)
+        frequency_modifier = (frequency_modifier + 100)
         tones.append(tone)
 
     return combine_tones(tones)
