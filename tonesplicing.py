@@ -159,8 +159,16 @@ def package_tone_combination(combined_tone):
     output_filename = output_filename + '.wav'
 
     # call a function to create blank .wav file with the user inputted file name to overwrite
-    # noise_out = wave.open(output_filename, 'wb')
-    noise_out = wave.open(generate_blank_file(output_filename), 'wb')
+    noise_out = wave.open(output_filename, 'wb')
+    # noise_out = wave.open(generate_blank_file(output_filename), 'wb')
+    noise_out.setparams((
+        N_CHANNELS,
+        SAMPLE_WIDTH,
+        FRAMERATE,
+        N_FRAMES,
+        COMP_TYPE,
+        COMP_NAME
+    ))
 
     values = []
     for i in range(0, len(combined_tone)):
@@ -173,7 +181,8 @@ def package_tone_combination(combined_tone):
     noise_out.writeframes(value_str)
     noise_out.close()
 
-def generate_blank_file(input):
+
+# def generate_blank_file(input):
 
 
 

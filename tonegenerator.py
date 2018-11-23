@@ -87,7 +87,6 @@ def generate_tones(amount_of_tones):
     return combine_tones(tones)
 
 
-
 def combine_tones(list_of_tones):
     '''
     this code is supposed to create a sawtooth-wave by combining different tones together
