@@ -11,7 +11,7 @@ FPS = 30
 FPS_CLOCK = pygame.time.Clock()
 
 DISPLAYSURFACE = pygame.display.set_mode((400, 300), 0, 32)
-pygame.display.set_caption('Tone Generator')
+pygame.display.set_caption('Tone Generator: For best results, combine 3 tones')
 PURPLE = (155, 0, 255)
 FILE = 'sample.wav'
 
@@ -115,10 +115,10 @@ def combine_tones(list_of_tones):
             # print(tone_sample)
         combined_tone.append(tone_sample)
 
-    print(combined_tone)
-
     return combined_tone
 
+'''
+please ignore this, this is just an example of normalization that I wish to implement in the future
 
 # largest = 0
 # for value in values:
@@ -129,8 +129,10 @@ def combine_tones(list_of_tones):
     # louder = amplification * int(value)
     # value = bytes(louder)
     # print(int(value))
+'''
 
 create_tone()
+print('Return to the purple window and press SPACE to play your sound. The filename is: sample.wav')
 my_noise = pygame.mixer.Sound('sample.wav')
 
 while True:
