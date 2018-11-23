@@ -1,7 +1,6 @@
 import pygame
 import sys
 import wave
-import math
 import struct
 from pygame.locals import *
 
@@ -127,30 +126,51 @@ def user_define_file():
 
 def user_choose_tones_to_combine():
 
-    amount_of_tones_to_combine = input('How many tones to combine?:\n')
+    # TODO ensure input for amount_to_combine is a sensible integer (between 2 and 100?)
+    amount_of_tones_to_combine = 0
+    while amount_of_tones_to_combine is not '2':
+        amount_of_tones_to_combine = input('How many tones to combine?:\n')
+        if amount_of_tones_to_combine is not '2':
+            print('Please type 2, it doesn\'t work otherwise')
+        elif amount_of_tones_to_combine is '2':
+            break
+
     print('Please choose', amount_of_tones_to_combine, 'tones to combine.')
-    # TODO ensure input is a sensible int and loop through 'amount_to_combine'
-    # TODO ensure inputs for 'first' and 'second' are also integers between 0 and amount_of_tones
-    tone_A = input('First tone: ')
-    tone_B = input('Second tone: ')
 
-    list_of_tones = [tone_A, tone_B]
+    # TODO ensure inputs for 'first' and 'second' are integers between 1 and amount_of_tones
+    tone_A = tone_B = 0
+    while type(tone_A) != int or tone_A < 1 or tone_A > 3:
+        tone_A = input('First tone: ')
+        if tone_A in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+            if 0 < int(tone_A) < 4:
+                tone_A = int(tone_A)
+                print('First tone is:', tone_A)
+            else:
+                print('Please enter a number between 1 and 3')
+        else:
+            print('Please enter a single digit integer')
 
+    while type(tone_B) != int or tone_B < 1 or tone_B > 3:
+        tone_B = input('Second tone: ')
+        if tone_B in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+            if 0 < int(tone_B) < 4:
+                tone_B = int(tone_B)
+                print('Second tone is:', tone_B)
+            else:
+                print('Please enter a number between 1 and 3')
+        else:
+            print('Please enter a single digit integer')
+
+    list_of_tones = [str(tone_A), str(tone_B)]
     return list_of_tones
 
 
 def combine_tones(dictionary_of_tones, list_of_tones):
-    # TODO once again, make this a for loop for a variable amount of combinations
+    # TODO make this a for loop for a variable amount of combinations
     tone_A = 'tone_' + str(list_of_tones[0])
     tone_B = 'tone_' + str(list_of_tones[1])
 
-    print(tone_A)
-    print(tone_B)
-
     tone_combination = dictionary_of_tones[tone_A] + dictionary_of_tones[tone_B]
-
-    print(tone_combination)
-
     return tone_combination
 
 
@@ -159,6 +179,8 @@ def package_tone_combination(combined_tone):
     output_filename = input('Again, the \'.wav\' suffix will be added automatically:\n')
     output_filename = output_filename + '.wav'
 
+    # TODO have these parameters be the same as the original input file
+    # except for N_FRAMES which should be frames_per_tone * tones_to_combine
     noise_out = wave.open(output_filename, 'wb')
     noise_out.setparams((
         N_CHANNELS,
@@ -196,9 +218,9 @@ def package_tone_combination(combined_tone):
 def main():
     tone_combination = combine_tones(separate_tones(user_define_file()), user_choose_tones_to_combine())
     finished_noise = pygame.mixer.Sound(package_tone_combination(tone_combination))
-    input('Press any key to hear your noise once.')
+    input('Press ENTER to hear your noise once. Be warned, it will be rather loud.')
     finished_noise.play()
-    print('Hope that wasn\'t too loud. Return to the orange window and press SPACE to generate another noise.')
+    print('I hope you still have eardrums. Return to the orange window and press SPACE to generate another noise.')
 
 
 while True:
