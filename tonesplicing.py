@@ -18,7 +18,8 @@ pygame.init()
 
 FPS = 30
 FPS_CLOCK = pygame.time.Clock()
-DISPLAYSURFACE = pygame.display.set_mode((400, 300), 0, 32)
+DISPLAYSURFACE = pygame.display.set_mode((800, 600), 0, 32)
+pygame.display.set_caption('Tone Splicer: Press SPACE to make your own Frankenstein\'s Tone!')
 ORANGE = (210, 69, 0)
 
 length_of_each_sample = 0.2
@@ -158,9 +159,7 @@ def package_tone_combination(combined_tone):
     output_filename = input('Again, the \'.wav\' suffix will be added automatically:\n')
     output_filename = output_filename + '.wav'
 
-    # call a function to create blank .wav file with the user inputted file name to overwrite
     noise_out = wave.open(output_filename, 'wb')
-    # noise_out = wave.open(generate_blank_file(output_filename), 'wb')
     noise_out.setparams((
         N_CHANNELS,
         SAMPLE_WIDTH,
@@ -171,6 +170,7 @@ def package_tone_combination(combined_tone):
     ))
 
     values = []
+    print('Packaging...')
     for i in range(0, len(combined_tone)):
 
         packaged_value = struct.pack("h", int(combined_tone[i]))
@@ -180,10 +180,9 @@ def package_tone_combination(combined_tone):
     value_str = b''.join(values)
     noise_out.writeframes(value_str)
     noise_out.close()
+    print('Packaging successful.')
 
-
-# def generate_blank_file(input):
-
+    return output_filename
 
 
 # Combine and save that list as a separate list
@@ -193,9 +192,14 @@ def package_tone_combination(combined_tone):
     # so for example, the first combined tone the user creates with the 1 key
     # the second sound they create with the 2 key, up until we run out of keys
 
+
 def main():
     tone_combination = combine_tones(separate_tones(user_define_file()), user_choose_tones_to_combine())
-    package_tone_combination(tone_combination)
+    finished_noise = pygame.mixer.Sound(package_tone_combination(tone_combination))
+    input('Press any key to hear your noise once.')
+    finished_noise.play()
+    print('Hope that wasn\'t too loud. Return to the orange window and press SPACE to generate another noise.')
+
 
 while True:
     DISPLAYSURFACE.fill(ORANGE)

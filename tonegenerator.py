@@ -11,6 +11,7 @@ FPS = 30
 FPS_CLOCK = pygame.time.Clock()
 
 DISPLAYSURFACE = pygame.display.set_mode((400, 300), 0, 32)
+pygame.display.set_caption('Tone Generator')
 PURPLE = (155, 0, 255)
 FILE = 'sample.wav'
 
