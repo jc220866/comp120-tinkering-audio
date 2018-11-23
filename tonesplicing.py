@@ -34,7 +34,7 @@ the menu closing and the menu opening respectively
 
 def read_wav(filename):
     """
-    this solution was provided by Dr. Scott via comp120 Slack channel
+    this solution for reading a wave file was provided by Dr. Scott via comp120 Slack channel
 
     :param filename:
     :return:
@@ -72,10 +72,9 @@ def read_wav(filename):
     return list(audio_data), amount_of_tones, frames_per_tone
 
 
-# For every 0.2 seconds worth of samples in our audio file
 def calculate_amount_of_tones(sample_rate, audio_data_list):
     """
-    assuming we only use wav files consisting of multiple 200 millisecond-
+    assuming we only work with audio files consisting of multiple 200 millisecond-
     long tones joined together, this function calculates how many of those tones
     are within the audio file we are reading
 
@@ -90,7 +89,16 @@ def calculate_amount_of_tones(sample_rate, audio_data_list):
 
 
 def separate_tones(filename):
+    """
+    This function calls the read_wav function to get the contents of our wave file and
+    relevant information such as how many tones and how many frames are in each tone
 
+    Then we use this data and a nested for loop to separate the conjoined tones of the original file
+    These separated tones are placed into a dictionary and that is what we return
+
+    :param filename:
+    :return:
+    """
     audio_data_list, amount_of_tones, frames_per_tone = read_wav(filename)
 
     separated_tones = {}
@@ -139,7 +147,7 @@ def user_choose_tones_to_combine():
 
     # TODO ensure inputs for 'first' and 'second' are integers between 1 and amount_of_tones
     tone_A = tone_B = 0
-    while type(tone_A) != int or tone_A < 1 or tone_A > 3:
+    while type(tone_A) != int or (tone_A < 1) or (tone_A > 3):
         tone_A = input('First tone: ')
         if tone_A in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
             if 0 < int(tone_A) < 4:
@@ -150,7 +158,7 @@ def user_choose_tones_to_combine():
         else:
             print('Please enter a single digit integer')
 
-    while type(tone_B) != int or tone_B < 1 or tone_B > 3:
+    while type(tone_B) != int or (tone_B < 1) or (tone_B > 3):
         tone_B = input('Second tone: ')
         if tone_B in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
             if 0 < int(tone_B) < 4:
@@ -161,14 +169,14 @@ def user_choose_tones_to_combine():
         else:
             print('Please enter a single digit integer')
 
-    list_of_tones = [str(tone_A), str(tone_B)]
-    return list_of_tones
+    list_of_tones_to_combine = [str(tone_A), str(tone_B)]
+    return list_of_tones_to_combine
 
 
-def combine_tones(dictionary_of_tones, list_of_tones):
+def combine_tones(dictionary_of_tones, list_of_tones_to_combine):
     # TODO make this a for loop for a variable amount of combinations
-    tone_A = 'tone_' + str(list_of_tones[0])
-    tone_B = 'tone_' + str(list_of_tones[1])
+    tone_A = 'tone_' + str(list_of_tones_to_combine[0])
+    tone_B = 'tone_' + str(list_of_tones_to_combine[1])
 
     tone_combination = dictionary_of_tones[tone_A] + dictionary_of_tones[tone_B]
     return tone_combination
@@ -207,17 +215,14 @@ def package_tone_combination(combined_tone):
     return output_filename
 
 
-# Combine and save that list as a separate list
-# export the samples for menuopen and menuclose as .wav files
-
-# provide a way to play each separate sound with the number keys
-    # so for example, the first combined tone the user creates with the 1 key
-    # the second sound they create with the 2 key, up until we run out of keys
-
-
 def main():
     tone_combination = combine_tones(separate_tones(user_define_file()), user_choose_tones_to_combine())
     finished_noise = pygame.mixer.Sound(package_tone_combination(tone_combination))
+
+    # TODO provide a way to play each separate sound with the number keys
+    # so for example, the first combined tone the user creates with the 1 key
+    # the second sound they create with the 2 key, up until we run out of keys
+
     input('Press ENTER to hear your noise once. Be warned, it will be rather loud.')
     finished_noise.play()
     print('I hope you still have eardrums. Return to the orange window and press SPACE to generate another noise.')
